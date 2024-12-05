@@ -12,82 +12,96 @@
 </head>
 
 <body>
-    <h1>Kyle's Kopius Komics</h1>
-    <div class="messageBox">
-        <div class="messageTopper"
-             id="message"></div>
+    <div class="grid-container">
+        <div class="messageBox">
+            <div class="messageTopper"
+                 id="message"></div>
+        </div>
+        <h1>Kyle's Kopius Komics</h1>
+        <div class="messageBox">
+            <button class="add-button"
+                    id="addBtn"
+                    style="background: #00ff00;">+ Add Comic +</button>
+        </div>
+        <table id="comicTable"
+               class="draggable-table">
+            <thead>
+                <th>Comic</th>
+                <th>Creator</th>
+                <th>Reason for Suggestion</th>
+                <th>Kyle's Rating</th>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>April Douglas</td>
+                    <td>Health Educator</td>
+                </tr>
+                <tr>
+                    <td>Salma Mcbride</td>
+                    <td>Mental Health Counselor</td>
+                </tr>
+                <tr>
+                    <td>Kassandra Donovan</td>
+                    <td>Makeup Artists</td>
+                </tr>
+                <tr>
+                    <td>Yosef Hartman</td>
+                    <td>Theatrical and Performance</td>
+                </tr>
+                <tr>
+                    <td>Ronald Mayo</td>
+                    <td>Plant Etiologist</td>
+                </tr>
+                <tr>
+                    <td>Trey Woolley</td>
+                    <td>Maxillofacial Surgeon</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
-    <div class="messageBox">
-        <button class="add-button"
-                id="addBtn"
-                style="background: #00ff00; font-size:20px">+ Add Comic +</button>
-    </div>
-    <table id="comicTable"
-           class="draggable-table">
-        <thead>
-            <th>Comic</th>
-            <th>Creator</th>
-            <th>Reason for Suggestion</th>
-            <th>Kyle's Rating</th>
-        </thead>
-        <tbody>
-            <tr>
-                <td>April Douglas</td>
-                <td>Health Educator</td>
-            </tr>
-            <tr>
-                <td>Salma Mcbride</td>
-                <td>Mental Health Counselor</td>
-            </tr>
-            <tr>
-                <td>Kassandra Donovan</td>
-                <td>Makeup Artists</td>
-            </tr>
-            <tr>
-                <td>Yosef Hartman</td>
-                <td>Theatrical and Performance</td>
-            </tr>
-            <tr>
-                <td>Ronald Mayo</td>
-                <td>Plant Etiologist</td>
-            </tr>
-            <tr>
-                <td>Trey Woolley</td>
-                <td>Maxillofacial Surgeon</td>
-            </tr>
-        </tbody>
-    </table>
 
     <form class="form-popup"
           id="formPopup"
           method="POST">
-        <h2>Add/Edit Entry</h2>
-        <label for="comicName">Comic Name:</label>
-        <input type="text"
-               id="comicName"
-               name="Comic"
-               required>
-        <label for="creator">Creator:</label>
-        <input type="text"
-               id="creator"
-               name="Creator">
-        <label for="reason">Reason for Suggestion (if any):</label>
-        <textarea id="reason"
-                  name="Reason"></textarea>
-        <label for="rating">Your Rating (1 - 69,420):</label>
-        <input type="number"
-               id="rating"
-               name="Rating"
-               min="1"
-               max="69420">
-        <button id="saveBtn"
-                type="submit">
-            Save
-        </button>
-        <button id="cancelBtn"
-                type="cancel">
-            Cancel
-        </button>
+        <div style="display: flex; flex-direction: column;">
+            <h2>Add Edit Comic</h2>
+        </div>
+        <div style="display: flex; flex-direction: column;">
+            <label for="comicName">Comic Name:</label>
+            <input type="text"
+                   id="comicName"
+                   name="Comic"
+                   required>
+        </div>
+        <div style="display: flex; flex-direction: column;">
+            <label for="creator">Creator:</label>
+            <input type="text"
+                   id="creator"
+                   name="Creator">
+        </div>
+        <div style="display: flex; flex-direction: column;">
+            <label for="reason">Reason for Suggestion (if any):</label>
+            <textarea id="reason"
+                      name="Reason"></textarea>
+        </div>
+        <div style="display: flex; flex-direction: column;">
+            <label for="rating">Your Rating (1 - 69,420):</label>
+            <input type="number"
+                   id="rating"
+                   name="Rating"
+                   min="1"
+                   max="69420">
+        </div>
+        <div class="button-grid">
+            <button id="saveBtn"
+                    type="submit">
+                Save
+            </button>
+            <button id="cancelBtn"
+                    type="cancel">
+                Cancel
+            </button>
+        </div>
     </form>
 
 
@@ -102,4 +116,5 @@
 
     <script type="text/javascript"
             src="reading_order.js"></script>
+    </div>
 </body>
