@@ -81,7 +81,7 @@
 
     document.getElementById('addBtn').onclick = () => {
         currentRow = null;
-        formPopup.style.display = 'grid';
+        formPopup.style.display = 'block';
     };
 
     document.getElementById('saveBtn').onclick = () => {
@@ -143,11 +143,11 @@
             let target = getTargetRow(event.target);
             if (target) {
                 currRow = target;
+                addDraggableRow(target);
                 currRow.classList.add('is-dragging');
 
                 let coords = getMouseCoords(event);
                 mouseDownY = coords.y;
-                addDraggableRow(target);
 
                 mouseDrag = true;
 
@@ -191,7 +191,7 @@
     function moveRow(x, y, oy) {
 
         let rows = getRows();
-        transy = y;
+        transy = y - oy;
 
         if (isMouseInside(x, y, table)) {
             dragElem.style.transform = "translate3d(" + 0 + "px, " + transy + "px, 0)";
@@ -239,9 +239,7 @@
         dragElem = target.cloneNode(true);
         dragElem.classList.add('draggable-table__drag');
         dragElem.style.height = getStyle(target, 'height');
-        dragElem.style.width = getStyle(target, 'width');
         dragElem.style.background = getStyle(target, 'backgroundColor');
-
         for (var i = 0; i < target.children.length; i++) {
             let oldTD = target.children[i],
                 newTD = dragElem.children[i];
@@ -251,16 +249,13 @@
             newTD.style.margin = getStyle(oldTD, 'margin');
         }
 
-        dragElem.style.position = "absolute";
         table.appendChild(dragElem);
 
 
         let tPos = target.getBoundingClientRect(),
-            dPos = dragElem.getBoundingClientRect(),
-            tabPos = table.getBoundingClientRect();
-        
-        dragElem.style.transform = "translate3d(" + 0 + "px, " + dPos.bottom - tPos.bottom + "px, 0)";
-
+            dPos = dragElem.getBoundingClientRect();
+        dragElem.style.bottom = ((dPos.y - tPos.y) - tPos.height) + "px";
+        dragElem.style.left = "-1px";
 
         document.dispatchEvent(new MouseEvent('mousemove',
             { view: window, cancelable: true, bubbles: true }
