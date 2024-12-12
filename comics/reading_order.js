@@ -29,7 +29,14 @@
             .then(res => res.json())
             .then(res => {
                 const values = res.values;
-                console.log(values);
+                for (let i = 1; i < values.length; i++) {
+                    console.log(values[i]);
+                    let comic = values[i][0],
+                        creator = values[i][1],
+                        reason = values[i][2],
+                        rating = values[i][3];
+                    addRow(comic, creator, reason, rating);
+                }
                 }
             )
     }
@@ -113,14 +120,7 @@
             currentRow.children[4].innerText = rating;
 
         } else {
-            const row = table.insertRow(-1);
-            row.innerHTML = `
-            <tr>
-            <td>${comic}</td>
-            <td>${creator}</td>
-            <td>${reason}</td>
-            <td>${rating}</td>
-            </tr>`;
+            addRow(comic, creator, reason, rating)
         }
         formPopup.style.display = 'none';
 
@@ -150,6 +150,20 @@
 
     document.getElementById('cancelDeleteBtn').onclick = () => confirmPopup.style.display = 'none';
 
+    function addRow(comic, creator, reason, rating) {
+        const row = table.insertRow(-1);
+        row.innerHTML = `
+            <tr>
+                <td>
+                    <button class="material-icons">reorder</button>
+                </td>
+                <td>${comic}</td>
+                <td>${creator}</td>
+                <td>${reason}</td>
+                <td>${rating}</td>
+                <td><button class="material-icons">edit</button></td>
+            </tr>`;
+    }
 
     function bindMouse() {
         document.addEventListener('mousedown', (event) => {
