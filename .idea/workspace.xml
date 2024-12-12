@@ -45,7 +45,7 @@
   }
 }]]></component>
   <component name="RunManager" selected="JavaScript Debug.index.html">
-    <configuration name="index.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/shared/comics/index.html" useBuiltInWebServerPort="true">
+    <configuration name="index.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/shared/index.html" useBuiltInWebServerPort="true">
       <method v="2" />
     </configuration>
     <configuration name="reading_order.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/shared/comics/reading_order.html" useBuiltInWebServerPort="true">
