@@ -17,28 +17,13 @@
         mouseDrag = false;
 
     function init() {
-        bindMouse();
-
-        fetch(scriptURL,
-            {
-                headers: {
-                    "Content-Type": "text/plain;charset=utf-8",
-                },
-            }
-        )
-            .then(res => res.json())
-            .then(res => {
-                const values = res.values;
-                for (let i = 1; i < values.length; i++) {
-                    console.log(values[i]);
-                    let comic = values[i][0],
-                        creator = values[i][1],
-                        reason = values[i][2],
-                        rating = values[i][3];
-                    addRow(comic, creator, reason, rating);
-                }
-                }
-            )
+        getGoogleSheetRows(scriptURL);
+        document.addEventListener('mousedown', onPressed);
+        document.addEventListener('touchstart', onPressed);
+        document.addEventListener('mousemove', onDragged);
+        document.addEventListener('touchmove', onDragged);
+        document.addEventListener('mouseup', onReleased);
+        document.addEventListener('touchend', onReleased);
     }
 
     document.getElementById("formPopup").addEventListener("submit", function (e) {
@@ -128,7 +113,6 @@
 
     document.getElementById('cancelBtn').onclick = () => formPopup.style.display = 'none';
 
-
     window.editRow = (btn) => {
         currentRow = btn.closest('tr');
         document.getElementById('comicName').value = currentRow.children[1].innerText;
@@ -165,55 +149,70 @@
             </tr>`;
     }
 
-    function bindMouse() {
-        document.addEventListener('mousedown', (event) => {
-            if (event.button !== 0 || event.target.tagName !== "BUTTON") return true;
+    function onPressed(event) {
+        if (event.button !== 0 || event.target.tagName !== "BUTTON") return true;
 
-            if (event.target.parentNode.parentNode.tagName !== "TR") return true
+        if (event.target.parentNode.parentNode.tagName !== "TR") return true
 
-            let targetRow = event.target.parentNode.parentNode;
+        let targetRow = event.target.parentNode.parentNode;
 
-            if (event.target.textContent === "edit") {
-                editRow(targetRow)
-                return true
+        if (event.target.textContent === "edit") {
+            editRow(targetRow)
+            return true
+        }
+
+        selectedRow = targetRow;
+        addDraggableRow(targetRow);
+        selectedRow.classList.add('is-dragging');
+
+        let coords = getMouseCoords(event);
+        startY = coords.y;
+
+        mouseDrag = true;
+    }
+
+    function onDragged(event) {
+        if (!mouseDrag) return;
+
+        let coords = getMouseCoords(event);
+        mouseX = coords.x;
+        mouseY = coords.y;
+
+        moveRow(mouseX, mouseY);
+    }
+
+    function onReleased(event) {
+        if (!mouseDrag) return;
+
+        selectedRow.classList.remove('is-dragging');
+        table.removeChild(dragRow);
+
+        dragRow = null;
+        startY = null
+        mouseDrag = false;
+    }
+
+    function getGoogleSheetRows(url) {
+        fetch(url,
+            {
+                headers: {
+                    "Content-Type": "text/plain;charset=utf-8",
+                },
             }
-
-            selectedRow = targetRow;
-            addDraggableRow(targetRow);
-            selectedRow.classList.add('is-dragging');
-
-            let coords = getMouseCoords(event);
-            startY = coords.y;
-
-            mouseDrag = true;
-
-        });
-
-        table.addEventListener("dblclick", (event) => {
-            // Code to execute on double-click
-            console.log("Double-click detected!");
-        });
-
-        document.addEventListener('mousemove', (event) => {
-            if (!mouseDrag) return;
-
-            let coords = getMouseCoords(event);
-            mouseX = coords.x;
-            mouseY = coords.y;
-
-            moveRow(mouseX, mouseY);
-        });
-
-        document.addEventListener('mouseup', (event) => {
-            if (!mouseDrag) return;
-
-            selectedRow.classList.remove('is-dragging');
-            table.removeChild(dragRow);
-
-            dragRow = null;
-            startY = null
-            mouseDrag = false;
-        });
+        )
+            .then(res => res.json())
+            .then(res => {
+                    const values = res.values;
+                    for (let i = 1; i < values.length; i++) {
+                        console.log(values[i]);
+                        let comic = values[i][0],
+                            creator = values[i][1],
+                            reason = values[i][2],
+                            rating = values[i][3];
+                        addRow(comic, creator, reason, rating);
+                    }
+                }
+            )
     }
 
     function swapRow(row, index) {
