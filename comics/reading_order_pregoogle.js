@@ -1,272 +1,338 @@
+@ -1,272 +0,0 @@
 (function () {
-    "use strict";
+"use strict";
 
-    const table = document.getElementById('comicTable');
-    const tbody = table.querySelector('tbody');
-    const formPopup = document.getElementById('formPopup');
-    const confirmPopup = document.getElementById('confirmPopup');
-    let currentRow = null;
+const table = document.getElementById('comicTable');
+const tbody = table.querySelector('tbody');
+const formPopup = document.getElementById('formPopup');
+const confirmPopup = document.getElementById('confirmPopup');
+let currentRow = null;
 
-    var currRow = null,
-        dragElem = null,
-        mouseDownY = 0,
-        mouseX = 0,
-        mouseY = 0,
-        transy = 0,
-        mouseDrag = false;
+var currRow = null,
+dragElem = null,
+mouseDownY = 0,
+mouseX = 0,
+mouseY = 0,
+transy = 0,
+mouseDrag = false;
 
-    function init() {
-        bindMouse();
-    }
+function init() {
+bindMouse();
+}
 
-    document.getElementById("form").addEventListener("submit", function (e) {
-        e.preventDefault(); // Prevent the default form submission
-        document.getElementById("message").textContent = "Submitting..";
-        document.getElementById("message").style.display = "block";
-        document.getElementById("submit-button").disabled = true;
+document.getElementById("form").addEventListener("submit", function (e) {
+e.preventDefault(); // Prevent the default form submission
+document.getElementById("message").textContent = "Submitting..";
+document.getElementById("message").style.display = "block";
+document.getElementById("submit-button").disabled = true;
 
-        // Collect the form data
-        var formData = new FormData(this);
-        var keyValuePairs = [];
-        for (var pair of formData.entries()) {
-            keyValuePairs.push(pair[0] + "=" + pair[1]);
-        }
+// Collect the form data
+var formData = new FormData(this);
+var keyValuePairs = [];
+for (var pair of formData.entries()) {
+keyValuePairs.push(pair[0] + "=" + pair[1]);
+}
 
-        var formDataString = keyValuePairs.join("&");
+var formDataString = keyValuePairs.join("&");
 
-        // Send a POST request to your Google Apps Script
-        fetch(
-            "https://script.google.com/macros/s/AKfycbxBI5dklcmWaigQxB-Obpw3zmwf5EFQ-5ytzbrAaoRFsUx0y2yctMOWZ7WEwWxohBLAmg/exec",
-            {
-                redirect: "follow",
-                method: "POST",
-                body: formDataString,
-                headers: {
-                    "Content-Type": "text/plain;charset=utf-8",
-                },
-            }
-        )
-            .then(function (response) {
-                // Check if the request was successful
-                if (response) {
-                    return response; // Assuming your script returns JSON response
-                } else {
-                    throw new Error("Failed to submit the form.");
-                }
-            })
-            .then(function (data) {
-                // Display a success message
-                document.getElementById("message").textContent =
-                    "Data submitted successfully!";
-                document.getElementById("message").style.display = "block";
-                document.getElementById("message").style.backgroundColor = "green";
-                document.getElementById("message").style.color = "beige";
-                document.getElementById("submit-button").disabled = false;
-                document.getElementById("form").reset();
+// Send a POST request to your Google Apps Script
+fetch(
+"https://script.google.com/macros/s/AKfycbxBI5dklcmWaigQxB-Obpw3zmwf5EFQ-5ytzbrAaoRFsUx0y2yctMOWZ7WEwWxohBLAmg/exec",
+{
+redirect: "follow",
+method: "POST",
+body: formDataString,
+headers: {
+"Content-Type": "text/plain;charset=utf-8",
+},
+}
+)
+.then(function (response) {
+// Check if the request was successful
+if (response) {
+return response; // Assuming your script returns JSON response
+} else {
+throw new Error("Failed to submit the form.");
+}
+})
+.then(function (data) {
+// Display a success message
+document.getElementById("message").textContent =
+"Data submitted successfully!";
+document.getElementById("message").style.display = "block";
+document.getElementById("message").style.backgroundColor = "green";
+document.getElementById("message").style.color = "beige";
+document.getElementById("submit-button").disabled = false;
+document.getElementById("form").reset();
 
-                setTimeout(function () {
-                    document.getElementById("message").textContent = "";
-                    document.getElementById("message").style.display = "none";
-                }, 2600);
-            })
-            .catch(function (error) {
-                // Handle errors, you can display an error message here
-                console.error(error);
-                document.getElementById("message").textContent =
-                    "An error occurred while submitting the form.";
-                document.getElementById("message").style.display = "block";
-            });
-    });
+setTimeout(function () {
+document.getElementById("message").textContent = "";
+document.getElementById("message").style.display = "none";
+}, 2600);
+})
+.catch(function (error) {
+// Handle errors, you can display an error message here
+console.error(error);
+document.getElementById("message").textContent =
+"An error occurred while submitting the form.";
+document.getElementById("message").style.display = "block";
+});
+});
 
-    document.getElementById('addBtn').onclick = () => {
-        currentRow = null;
-        formPopup.style.display = 'block';
-    };
+document.getElementById('addBtn').onclick = () => {
+currentRow = null;
+formPopup.style.display = 'block';
+};
 
-    document.getElementById('saveBtn').onclick = () => {
-        const comic = document.getElementById('comicName').value;
-        const creator = document.getElementById('creator').value;
-        const reason = document.getElementById('reason').value;
-        const rating = document.getElementById('rating').value;
-        if (!comic) return;
+document.getElementById('saveBtn').onclick = () => {
+const comic = document.getElementById('comicName').value;
+const creator = document.getElementById('creator').value;
+const reason = document.getElementById('reason').value;
+const rating = document.getElementById('rating').value;
+if (!comic) return;
 
-        if (currentRow) {
-            currentRow.children[0].innerText = comic;
-            currentRow.children[1].innerText = creator;
-            currentRow.children[2].innerText = reason;
-            currentRow.children[3].innerText = rating;
+if (currentRow) {
+currentRow.children[0].innerText = comic;
+currentRow.children[1].innerText = creator;
+currentRow.children[2].innerText = reason;
+currentRow.children[3].innerText = rating;
 
-        } else {
-            const row = table.insertRow(-1);
-            row.innerHTML = `
-            <tr>
-            <td>${comic}</td>
-            <td>${creator}</td>
-            <td>${reason}</td>
-            <td>${rating}</td>
-            </tr>`;
-        }
-        formPopup.style.display = 'none';
+} else {
+const row = table.insertRow(-1);
+row.innerHTML = `
+<tr>
+    <td>${comic}</td>
+    <td>${creator}</td>
+    <td>${reason}</td>
+    <td>${rating}</td>
+</tr>`;
+}
+formPopup.style.display = 'none';
 
-    };
+};
 
-    document.getElementById('cancelBtn').onclick = () => formPopup.style.display = 'none';
-
-
-    window.editRow = (btn) => {
-        currentRow = btn.closest('tr');
-        document.getElementById('comicName').value = currentRow.children[0].innerText;
-        document.getElementById('creator').value = currentRow.children[1].innerText;
-        document.getElementById('reason').value = currentRow.children[2].innerText;
-        document.getElementById('rating').value = currentRow.children[3].innerText;
-        formPopup.style.display = 'block';
-    };
-
-    window.deleteRow = (btn) => {
-        currentRow = btn.closest('tr');
-        confirmPopup.style.display = 'flex';
-    };
-
-    document.getElementById('confirmDeleteBtn').onclick = () => {
-        currentRow.remove();
-        confirmPopup.style.display = 'none';
-    };
-
-    document.getElementById('cancelDeleteBtn').onclick = () => confirmPopup.style.display = 'none';
+document.getElementById('cancelBtn').onclick = () => formPopup.style.display = 'none';
 
 
-    function bindMouse() {
-        document.addEventListener('mousedown', (event) => {
-            if (event.button != 0) return true;
+window.editRow = (btn) => {
+currentRow = btn.closest('tr');
+document.getElementById('comicName').value = currentRow.children[0].innerText;
+document.getElementById('creator').value = currentRow.children[1].innerText;
+document.getElementById('reason').value = currentRow.children[2].innerText;
+document.getElementById('rating').value = currentRow.children[3].innerText;
+formPopup.style.display = 'block';
+};
 
-            let target = getTargetRow(event.target);
-            if (target) {
-                currRow = target;
-                addDraggableRow(target);
-                currRow.classList.add('is-dragging');
+window.deleteRow = (btn) => {
+currentRow = btn.closest('tr');
+confirmPopup.style.display = 'flex';
+};
 
-                let coords = getMouseCoords(event);
-                mouseDownY = coords.y;
+document.getElementById('confirmDeleteBtn').onclick = () => {
+currentRow.remove();
+confirmPopup.style.display = 'none';
+};
 
-                mouseDrag = true;
-
-            }
-        });
-
-        document.addEventListener('mousemove', (event) => {
-            if (!mouseDrag) return;
-
-            let coords = getMouseCoords(event);
-            mouseX = coords.x;
-            mouseY = coords.y;
-
-            moveRow(mouseX, mouseY, mouseDownY);
-        });
-
-        document.addEventListener('mouseup', (event) => {
-            if (!mouseDrag) return;
-
-            currRow.classList.remove('is-dragging');
-            table.removeChild(dragElem);
-
-            dragElem = null;
-            mouseDownY = null
-            mouseDrag = false;
-        });
-
-        document.addEventListener("drag", function (event) {
-            console.log("DRAG");
-        }, true);
-    }
-
-    function swapRow(row, index) {
-        let currIndex = Array.from(tbody.children).indexOf(currRow),
-            row1 = currIndex > index ? currRow : row,
-            row2 = currIndex > index ? row : currRow;
-
-        tbody.insertBefore(row1, row2);
-    }
-
-    function moveRow(x, y, oy) {
-
-        let rows = getRows();
-        transy = y - oy;
-
-        if (isMouseInside(x, y, table)) {
-            dragElem.style.transform = "translate3d(" + 0 + "px, " + transy + "px, 0)";
-        }
+document.getElementById('cancelDeleteBtn').onclick = () => confirmPopup.style.display = 'none';
 
 
-        for (var i = 0; i < rows.length; i++) {
-            let rowElem = rows[i];
+function bindMouse() {
+document.addEventListener('mousedown', (event) => {
+if (event.button != 0) return true;
 
-            if (currRow !== rowElem && isMouseInside(x, y, rowElem)) {
-                swapRow(rowElem, i);
-            }
-        }
-    }
+let target = getTargetRow(event.target);
+if (target) {
+currRow = target;
+addDraggableRow(target);
+currRow.classList.add('is-dragging');
 
-    function getRows() {
-        return table.querySelectorAll('tbody tr');
-    }
+let coords = getMouseCoords(event);
+mouseDownY = coords.y;
 
-    function getTargetRow(target) {
-        let elemName = target.tagName.toLowerCase();
+mouseDrag = true;
 
-        if (elemName == 'tr') return target;
-        if (elemName == 'td') return target.closest('tr');
-    }
+}
+});
 
-    function getMouseCoords(event) {
-        return {
-            x: event.clientX,
-            y: event.clientY
-        };
-    }
+document.addEventListener('mousemove', (event) => {
+if (!mouseDrag) return;
 
-    function isMouseInside(mx, my, elem) {
-        const rect = elem.getBoundingClientRect();
-        return (
-            mx >= rect.left &&
-            mx <= rect.right &&
-            my >= rect.top &&
-            my <= rect.bottom
-        );
-    }
+let coords = getMouseCoords(event);
+mouseX = coords.x;
+mouseY = coords.y;
 
-    function addDraggableRow(target) {
-        dragElem = target.cloneNode(true);
-        dragElem.classList.add('draggable-table__drag');
-        dragElem.style.height = getStyle(target, 'height');
-        dragElem.style.background = getStyle(target, 'backgroundColor');
-        for (var i = 0; i < target.children.length; i++) {
-            let oldTD = target.children[i],
-                newTD = dragElem.children[i];
-            newTD.style.width = getStyle(oldTD, 'width');
-            newTD.style.height = getStyle(oldTD, 'height');
-            newTD.style.padding = getStyle(oldTD, 'padding');
-            newTD.style.margin = getStyle(oldTD, 'margin');
-        }
+moveRow(mouseX, mouseY, mouseDownY);
+});
 
-        table.appendChild(dragElem);
+document.addEventListener('mouseup', (event) => {
+if (!mouseDrag) return;
+
+currRow.classList.remove('is-dragging');
+table.removeChild(dragElem);
+
+dragElem = null;
+mouseDownY = null
+mouseDrag = false;
+});
+
+document.addEventListener("drag", function (event) {
+console.log("DRAG");
+}, true);
+}
+
+function swapRow(row, index) {
+let currIndex = Array.from(tbody.children).indexOf(currRow),
+row1 = currIndex > index ? currRow : row,
+row2 = currIndex > index ? row : currRow;
+
+tbody.insertBefore(row1, row2);
+}
+
+function moveRow(x, y, oy) {
+
+let rows = getRows();
+transy = y - oy;
+
+if (isMouseInside(x, y, table)) {
+dragElem.style.transform = "translate3d(" + 0 + "px, " + transy + "px, 0)";
+}
 
 
-        let tPos = target.getBoundingClientRect(),
-            dPos = dragElem.getBoundingClientRect();
-        dragElem.style.bottom = ((dPos.y - tPos.y) - tPos.height) + "px";
-        dragElem.style.left = "-1px";
-
-        document.dispatchEvent(new MouseEvent('mousemove',
-            { view: window, cancelable: true, bubbles: true }
-        ));
-    }
-
-    function getStyle(target, styleName) {
-        let compStyle = getComputedStyle(target),
-            style = compStyle[styleName];
-
-        return style ? style : null;
-    }
-
-    init();
-})();
+for (var i = 0; i < rows.length;
+  i++)
+  {
+  let
+  rowElem=rows[i];
+  if
+  (currRow
+  !==rowElem
+  &&
+  isMouseInside(x,
+  y,
+  rowElem))
+  {
+  swapRow(rowElem,
+  i);
+  }
+  }
+  }
+  function
+  getRows()
+  {
+  return
+  table.querySelectorAll('tbody
+  tr');
+  }
+  function
+  getTargetRow(target)
+  {
+  let
+  elemName=target.tagName.toLowerCase();
+  if
+  (elemName=='tr'
+  )
+  return
+  target;
+  if
+  (elemName=='td'
+  )
+  return
+  target.closest('tr');
+  }
+  function
+  getMouseCoords(event)
+  {
+  return
+  {
+  x:
+  event.clientX,
+  y:
+  event.clientY
+  };
+  }
+  function
+  isMouseInside(mx,
+  my,
+  elem)
+  {
+  const
+  rect=elem.getBoundingClientRect();
+  return
+  (
+  mx>= rect.left &&
+    mx <= rect.right
+       &&
+       my>= rect.top &&
+        my <= rect.bottom
+           );
+           }
+           function
+           addDraggableRow(target)
+           {
+           dragElem=target.cloneNode(true);
+           dragElem.classList.add('draggable-table__drag');
+           dragElem.style.height=getStyle(target, 'height'
+           );
+           dragElem.style.background=getStyle(target, 'backgroundColor'
+           );
+           for
+           (var
+           i=0;
+           i
+           <
+           target.children.length;
+           i++)
+           {
+           let
+           oldTD=target.children[i],
+           newTD=dragElem.children[i];
+           newTD.style.width=getStyle(oldTD, 'width'
+           );
+           newTD.style.height=getStyle(oldTD, 'height'
+           );
+           newTD.style.padding=getStyle(oldTD, 'padding'
+           );
+           newTD.style.margin=getStyle(oldTD, 'margin'
+           );
+           }
+           table.appendChild(dragElem);
+           let
+           tPos=target.getBoundingClientRect(),
+           dPos=dragElem.getBoundingClientRect();
+           dragElem.style.bottom=((dPos.y
+           -
+           tPos.y)
+           -
+           tPos.height)
+           + "px"
+           ;
+           dragElem.style.left="-1px"
+           ;
+           document.dispatchEvent(new
+           MouseEvent('mousemove',
+           {
+           view:
+           window,
+           cancelable:
+           true,
+           bubbles:
+           true
+           }
+           ));
+           }
+           function
+           getStyle(target,
+           styleName)
+           {
+           let
+           compStyle=getComputedStyle(target),
+           style=compStyle[styleName];
+           return
+           style
+           ?
+           style
+           :
+           null;
+           }
+           init();
+           })();

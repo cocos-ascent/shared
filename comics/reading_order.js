@@ -1,3 +1,4 @@
+
 (function () {
     "use strict";
 
@@ -5,18 +6,32 @@
     const tbody = table.querySelector('tbody');
     const formPopup = document.getElementById('formPopup');
     const confirmPopup = document.getElementById('confirmPopup');
+    const scriptURL = "https://script.google.com/macros/s/AKfycbxBI5dklcmWaigQxB-Obpw3zmwf5EFQ-5ytzbrAaoRFsUx0y2yctMOWZ7WEwWxohBLAmg/exec"
     let currentRow = null;
 
-    var currRow = null,
-        dragElem = null,
-        mouseDownY = 0,
+    let selectedRow = null,
+        dragRow = null,
         mouseX = 0,
         mouseY = 0,
-        transy = 0,
+        startY = 0,
         mouseDrag = false;
 
     function init() {
         bindMouse();
+
+        fetch(scriptURL,
+            {
+                headers: {
+                    "Content-Type": "text/plain;charset=utf-8",
+                },
+            }
+        )
+            .then(res => res.json())
+            .then(res => {
+                const values = res.values;
+                console.log(values);
+                }
+            )
     }
 
     document.getElementById("formPopup").addEventListener("submit", function (e) {
@@ -27,17 +42,18 @@
         document.getElementById("saveBtn").disabled = true;
 
         // Collect the form data
-        var formData = new FormData(this);
-        var keyValuePairs = [];
+        let formData = new FormData(this);
+        let keyValuePairs = [];
         for (var pair of formData.entries()) {
             keyValuePairs.push(pair[0] + "=" + pair[1]);
         }
 
-        var formDataString = keyValuePairs.join("&");
+        let formDataString = keyValuePairs.join("&");
 
+        document.getElementById("formPopup").reset();
         // Send a POST request to your Google Apps Script
         fetch(
-            "https://script.google.com/macros/s/AKfycbxBI5dklcmWaigQxB-Obpw3zmwf5EFQ-5ytzbrAaoRFsUx0y2yctMOWZ7WEwWxohBLAmg/exec",
+            scriptURL,
             {
                 redirect: "follow",
                 method: "POST",
@@ -63,7 +79,6 @@
                 document.getElementById("message").style.backgroundColor = "green";
                 document.getElementById("message").style.color = "white";
                 document.getElementById("saveBtn").disabled = false;
-                document.getElementById("formPopup").reset();
 
                 setTimeout(function () {
                     document.getElementById("message").textContent = "";
@@ -92,10 +107,10 @@
         if (!comic) return;
 
         if (currentRow) {
-            currentRow.children[0].innerText = comic;
-            currentRow.children[1].innerText = creator;
-            currentRow.children[2].innerText = reason;
-            currentRow.children[3].innerText = rating;
+            currentRow.children[1].innerText = comic;
+            currentRow.children[2].innerText = creator;
+            currentRow.children[3].innerText = reason;
+            currentRow.children[4].innerText = rating;
 
         } else {
             const row = table.insertRow(-1);
@@ -116,10 +131,10 @@
 
     window.editRow = (btn) => {
         currentRow = btn.closest('tr');
-        document.getElementById('comicName').value = currentRow.children[0].innerText;
-        document.getElementById('creator').value = currentRow.children[1].innerText;
-        document.getElementById('reason').value = currentRow.children[2].innerText;
-        document.getElementById('rating').value = currentRow.children[3].innerText;
+        document.getElementById('comicName').value = currentRow.children[1].innerText;
+        document.getElementById('creator').value = currentRow.children[2].innerText;
+        document.getElementById('reason').value = currentRow.children[3].innerText;
+        document.getElementById('rating').value = currentRow.children[4].innerText;
         formPopup.style.display = 'block';
     };
 
@@ -138,20 +153,31 @@
 
     function bindMouse() {
         document.addEventListener('mousedown', (event) => {
-            if (event.button != 0) return true;
+            if (event.button !== 0 || event.target.tagName !== "BUTTON") return true;
 
-            let target = getTargetRow(event.target);
-            if (target) {
-                currRow = target;
-                addDraggableRow(target);
-                currRow.classList.add('is-dragging');
+            if (event.target.parentNode.parentNode.tagName !== "TR") return true
 
-                let coords = getMouseCoords(event);
-                mouseDownY = coords.y;
+            let targetRow = event.target.parentNode.parentNode;
 
-                mouseDrag = true;
-
+            if (event.target.textContent === "edit") {
+                editRow(targetRow)
+                return true
             }
+
+            selectedRow = targetRow;
+            addDraggableRow(targetRow);
+            selectedRow.classList.add('is-dragging');
+
+            let coords = getMouseCoords(event);
+            startY = coords.y;
+
+            mouseDrag = true;
+
+        });
+
+        table.addEventListener("dblclick", (event) => {
+            // Code to execute on double-click
+            console.log("Double-click detected!");
         });
 
         document.addEventListener('mousemove', (event) => {
@@ -161,61 +187,51 @@
             mouseX = coords.x;
             mouseY = coords.y;
 
-            moveRow(mouseX, mouseY, mouseDownY);
+            moveRow(mouseX, mouseY);
         });
 
         document.addEventListener('mouseup', (event) => {
             if (!mouseDrag) return;
 
-            currRow.classList.remove('is-dragging');
-            table.removeChild(dragElem);
+            selectedRow.classList.remove('is-dragging');
+            table.removeChild(dragRow);
 
-            dragElem = null;
-            mouseDownY = null
+            dragRow = null;
+            startY = null
             mouseDrag = false;
         });
-
-        document.addEventListener("drag", function (event) {
-            console.log("DRAG");
-        }, true);
     }
 
     function swapRow(row, index) {
-        let currIndex = Array.from(tbody.children).indexOf(currRow),
-            row1 = currIndex > index ? currRow : row,
-            row2 = currIndex > index ? row : currRow;
+        console.log(selectedRow.index);
+        console.log(Array.from(tbody.children).indexOf(selectedRow));
+        let currIndex = Array.from(tbody.children).indexOf(selectedRow),
+            row1 = currIndex > index ? selectedRow : row,
+            row2 = currIndex > index ? row : selectedRow;
+        console.log(currIndex);
 
         tbody.insertBefore(row1, row2);
     }
 
-    function moveRow(x, y, oy) {
+    function moveRow(x, y) {
+        if (!isInside(x, y, tbody.getBoundingClientRect())) return;
 
-        let rows = getRows();
-        transy = y - oy;
+        y = y - startY;
 
-        if (isMouseInside(x, y, table)) {
-            dragElem.style.transform = "translate3d(" + 0 + "px, " + transy + "px, 0)";
-        }
+        dragRow.style.transform = "translate3d(" + 0 + "px, " + y + "px, 0)";
 
+        let dragRowBox = dragRow.getBoundingClientRect();
 
-        for (var i = 0; i < rows.length; i++) {
-            let rowElem = rows[i];
+        for(let i = 0; i < tbody.rows.length; i++) {
+            let currRow = tbody.rows[i],
+                currRowBox = currRow.getBoundingClientRect();
 
-            if (currRow !== rowElem && isMouseInside(x, y, rowElem)) {
-                swapRow(rowElem, i);
+            if(selectedRow !== currRow && isIntersecting(dragRowBox, currRowBox)) {
+                console.log('yup')
+                if(Math.abs(dragRowBox.y - currRowBox.y) < currRowBox.height / 2)
+                    swapRow(currRow, i);
             }
         }
-    }
-
-    function getRows() {
-        return table.querySelectorAll('tbody tr');
-    }
-
-    function getTargetRow(target) {
-        let elemName = target.tagName.toLowerCase();
-
-        if (elemName == 'tr') return target;
-        if (elemName == 'td') return target.closest('tr');
     }
 
     function getMouseCoords(event) {
@@ -225,37 +241,42 @@
         };
     }
 
-    function isMouseInside(mx, my, elem) {
-        const rect = elem.getBoundingClientRect();
+    function isInside(x, y, elemBox) {
         return (
-            mx >= rect.left &&
-            mx <= rect.right &&
-            my >= rect.top &&
-            my <= rect.bottom
+            x >= elemBox.left &&
+            x <= elemBox.right &&
+            y >= elemBox.top &&
+            y <= elemBox.bottom
         );
     }
 
+    function isIntersecting(elem0, elem1) {
+        let	bottom1 = elem0.y,
+            top1 = bottom1 + elem0.height,
+            bottom2 = elem1.y,
+            top2 = bottom2 + elem1.height;
+
+        return Math.max(bottom1, top1) >= Math.min(bottom2, top2) &&
+            Math.min(bottom1, top1) <= Math.max(bottom2, top2);
+    }
+
     function addDraggableRow(target) {
-        dragElem = target.cloneNode(true);
-        dragElem.classList.add('draggable-table__drag');
-        dragElem.style.height = getStyle(target, 'height');
-        dragElem.style.background = getStyle(target, 'backgroundColor');
-        for (var i = 0; i < target.children.length; i++) {
+        dragRow = target.cloneNode(true);
+        dragRow.classList.add('draggable-table__drag');
+        dragRow.style.width = getStyle(target, 'width');
+        for (let i = 0; i < target.children.length; i++) {
             let oldTD = target.children[i],
-                newTD = dragElem.children[i];
-            newTD.style.width = getStyle(oldTD, 'width');
-            newTD.style.height = getStyle(oldTD, 'height');
+                newTD = dragRow.children[i];
             newTD.style.padding = getStyle(oldTD, 'padding');
             newTD.style.margin = getStyle(oldTD, 'margin');
         }
 
-        table.appendChild(dragElem);
-
+        table.appendChild(dragRow);
 
         let tPos = target.getBoundingClientRect(),
-            dPos = dragElem.getBoundingClientRect();
-        dragElem.style.bottom = ((dPos.y - tPos.y) - tPos.height) + "px";
-        dragElem.style.left = "-1px";
+            dPos = dragRow.getBoundingClientRect();
+        dragRow.style.bottom = ((dPos.y - tPos.y) - tPos.height) + "px";
+        dragRow.style.left = "-1px";
 
         document.dispatchEvent(new MouseEvent('mousemove',
             { view: window, cancelable: true, bubbles: true }
