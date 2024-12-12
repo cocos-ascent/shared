@@ -7,9 +7,9 @@
     const formPopup = document.getElementById('formPopup');
     const confirmPopup = document.getElementById('confirmPopup');
     const scriptURL = "https://script.google.com/macros/s/AKfycbxBI5dklcmWaigQxB-Obpw3zmwf5EFQ-5ytzbrAaoRFsUx0y2yctMOWZ7WEwWxohBLAmg/exec"
-    let currentRow = null;
 
-    let selectedRow = null,
+    let currentRow = null,
+        selectedRow = null,
         dragRow = null,
         mouseX = 0,
         mouseY = 0,
