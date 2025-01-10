@@ -54,7 +54,7 @@
           id="formPopup">
         <h2>Add/Edit Entry</h2>
         <div>
-            <label for="comicName">Comic Name:</label>
+            <label for="comicName">Comic Name (required):</label>
             <input type="text"
                    id="comicName"
                    name="Comic"
@@ -67,14 +67,14 @@
                    name="Creator">
         </div>
         <div>
-            <label for="reason">Reason for Suggestion (if any):</label>
+            <label for="reason">Reason for Suggestion:</label>
             <input type="text"
                    id="reason"
                    name="Reason">
         </div>
-        <div class="slidecontainer">
-            <label for="rating" id="demo">Your Rating (0 - 100):</label>
-            <input type="range" min="0" max="100" value="50" class="slider" id="rating" name="Rating">
+        <div class="slideContainer">
+            <label for="rating" id="ratingDisplay">Your Rating:</label>
+            <input type="range" min="0" max="100" value="null" class="slider" id="rating" name="rating">
         </div>
         <div class="formButtonContainer">
             <button id="saveBtn"
@@ -101,7 +101,7 @@
         <div class="content">
             <p class="confirm-message">Are you sure you want to delete?</p>
             <button id="confirmDeleteBtn" class="confirm-delete-button">Delete</button>
-            <button id="cancelDeleteBtn" class="cancel-delete-button">Cancel</button>
+            <button id="confirmCancelBtn" class="cancel-delete-button">Cancel</button>
         </div>
     </div>
 
