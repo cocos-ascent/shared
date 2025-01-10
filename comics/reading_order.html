@@ -11,85 +11,97 @@
           type="text/css" />
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 
 <body>
-    <h1>Kyle's Kopius Komics</h1>
-    <div class="messageBox">
-        <div class="messageTopper"
+    <div class="loading-container" id="loadingContainer">
+        <div class="inner-loading-container">
+            <h1>LOADING</h1>
+            <h1 id="loadingDots"></h1>
+        </div>
+    </div>
+    <div class="messageContainer">
+        <div class="message"
              id="message"></div>
     </div>
-    <div class="messageBox">
-        <button class="add-button"
-                id="addBtn"
-                style="background: #00ff00; font-size:20px">+ Add Comic +</button>
+    <div class="grid-container" id="gridContainer">
+        <h1>KYLE'S RECOMMENDATIONS</h1>
+
+        <div class="addButtonContainer">
+            <button class="add-button"
+                    id="addBtn">+ Add Comic +</button>
+        </div>
+        <table id="comicTable"
+               class="draggable-table">
+            <thead>
+                <tr>
+                    <td></td>
+                    <td>Comic</td>
+                    <td>Creator</td>
+                    <td>Reason for Suggestion</td>
+                    <td>Kyle's Rating</td>
+                    <td></td>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
     </div>
-    <table id="comicTable"
-           class="draggable-table">
-        <thead>
-            <tr>
-                <td></td>
-                <td>Comic</td>
-                <td>Creator</td>
-                <td>Reason for Suggestion</td>
-                <td>Kyle's Rating</td>
-                <td></td>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>
-                    <button class="material-icons">reorder</button>
-                </td>
-                <td>BATMAN</td>
-                <td>George W. Bush</td>
-                <td>cuz cool cool lazer beams okay cool</td>
-                <td>6969</td>
-                <td><button class="material-icons">edit</button></td>
-            </tr>
-        </tbody>
-    </table>
+
+    <div class="form-popup-bg" id="formPopupBG"></div>
 
     <form class="form-popup"
-          id="formPopup"
-          method="POST">
+          id="formPopup">
         <h2>Add/Edit Entry</h2>
-        <label for="comicName">Comic Name:</label>
-        <input type="text"
-               id="comicName"
-               name="Comic"
-               required>
-        <label for="creator">Creator:</label>
-        <input type="text"
-               id="creator"
-               name="Creator">
-        <label for="reason">Reason for Suggestion (if any):</label>
-        <textarea id="reason"
-                  name="Reason"></textarea>
-        <label for="rating">Your Rating (1 - 69,420):</label>
-        <input type="number"
-               id="rating"
-               name="Rating"
-               min="1"
-               max="69420">
-        <button id="saveBtn"
-                type="submit">
-            Save
-        </button>
-        <button id="cancelBtn"
-                type="cancel">
-            Cancel
-        </button>
+        <div>
+            <label for="comicName">Comic Name:</label>
+            <input type="text"
+                   id="comicName"
+                   name="Comic"
+                   required>
+        </div>
+        <div>
+            <label for="creator">Creator:</label>
+            <input type="text"
+                   id="creator"
+                   name="Creator">
+        </div>
+        <div>
+            <label for="reason">Reason for Suggestion (if any):</label>
+            <input type="text"
+                   id="reason"
+                   name="Reason">
+        </div>
+        <div class="slidecontainer">
+            <label for="rating" id="demo">Your Rating (0 - 100):</label>
+            <input type="range" min="0" max="100" value="50" class="slider" id="rating" name="Rating">
+        </div>
+        <div class="formButtonContainer">
+            <button id="saveBtn"
+                    type="button">
+                Save
+            </button>
+            <button id="cancelBtn"
+                    class="cancel-button"
+                    type="button">
+                Cancel
+            </button>
+        </div>
+        <div class="delete-button-container" id="deleteBtnContainer">
+            <button class="delete-btn"
+                    id="deleteBtn"
+                    type="button">
+                Delete
+            </button>
+        </div>
     </form>
-
 
     <div class="confirm-popup"
          id="confirmPopup">
         <div class="content">
-            <p>Are you sure you want to delete this entry?</p>
-            <button id="confirmDeleteBtn">Yes</button>
-            <button id="cancelDeleteBtn">No</button>
+            <p class="confirm-message">Are you sure you want to delete?</p>
+            <button id="confirmDeleteBtn" class="confirm-delete-button">Delete</button>
+            <button id="cancelDeleteBtn" class="cancel-delete-button">Cancel</button>
         </div>
     </div>
 

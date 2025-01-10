@@ -2,48 +2,85 @@
     font-family: 'Source Sans Pro', sans-serif;
 }
 
-body {
-    padding: 0px;
+html {
+    scroll-behavior: smooth;
+}
+
+html, body{
+    overflow-x: hidden;
     margin: 0;
+}
+body {
+    padding: 0;
     width: 100%;
     height: 100%;
     background: radial-gradient(circle, #c5c5c5 0%, #272727 100%);
-    overflow-x: hidden
 }
-
 h1 {
     font-size: 2em;
     font-weight: bold;
-    position: absolute;
-    top: 8%;
-    left: 10%;
-    width: 80%;
     letter-spacing: 5px;
-    text-transform: uppercase;
     text-align: center;
-    color: #c12727;
+    color: #ffffff;
     user-select: none;
+    margin: 0;
 }
 
-
-.messageBox {
+.loading-container {
     position: absolute;
+    width: 100%;
+    height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-    text-align: center;
-    margin: 20px;
-    top: 16%;
-    width: 100%;
+    font-size: 200%;
+}
+.loading-container h1 {
+    color: black;
+}
+.inner-loading-container {
+    position: relative;
+}
+.inner-loading-container h1:last-child {
+    position: absolute;
+    top: 0;
+    left: 100%;
 }
 
-.messageTopper {
+.grid-container {
+    position: absolute;
+    top: 0;
+    width: 90%;
     display: none;
-    padding: 8px;
-    font-weight: bold;
-    color: green;
-    border-radius: 4px;
-    border-color: aquamarine;
+    grid-template-rows: auto auto auto;
+    margin: 5%;
+    margin-top: 8%;
+    row-gap: 1%;
+}
+
+.messageContainer {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    padding: 1.5%;
+    height: 3%;
+    width: 100%;
+    font-size: 1em;
+    z-index: 7;
+}
+
+.message {
+    flex: auto;
+}
+
+.form-popup-bg {
+    display: none;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 2;
 }
 
 .form-popup {
@@ -53,37 +90,55 @@ h1 {
     left: 50%;
     transform: translate(-50%, -50%);
     background-color: #444;
-    border: 1px solid #888;
+    border: 3px solid #888;
     padding: 20px;
-    z-index: 10;
     color: #ccc;
-    width: 300px;
+    width: 70%;
+    height: 70%;
+    row-gap: 3%;
+    align-items: center;
+    margin-block-end: 0;
+    z-index: 3;
 }
+.form-popup div {
+    display: grid;
+    grid-template-rows: 0fr 1fr;
+    height: 100%;
+    margin: 1%;
+    row-gap: 0;
+}
+.form-popup label {
+    font-size: 1.5em;
+    margin: 0;
 
+}
+.form-popup h2 {
+    text-align: center;
+    margin: 0;
+}
 .form-popup input,
 .form-popup textarea {
-    width: 100%;
-    margin: 5px 0;
     background-color: #333;
     color: #ccc;
     border: 1px solid #666;
-    padding: 10px;
-}
+    height: 100%;
+    font-size: 1.2em;
 
-.form-popup button {
-    margin-top: 10px;
+}
+.form-popup button, .content button {
     width: 100%;
     padding: 10px;
     background-color: #555;
     border: 1px solid #888;
     color: #ccc;
     cursor: pointer;
+    font-size: 1.5em;
+    height: 80%;
 }
 
 .confirm-popup {
     display: none;
     position: fixed;
-    background: rgba(0, 0, 0, 0.7);
     top: 0;
     left: 0;
     right: 0;
@@ -91,113 +146,244 @@ h1 {
     justify-content: center;
     align-items: center;
     color: #ccc;
+    z-index: 5;
 }
-
-.confirm-popup .content {
+.content {
+    display: grid;
+    grid-template-areas:
+            "question question"
+            "confirm cancel";
+    grid-column-gap: 10%;
+    align-items: center;
+    border: 3px solid #888;
     background: #444;
     padding: 20px;
     border-radius: 5px;
+}
+
+.content .confirm-message {
+    grid-area: question;
+    margin-top: 0;
+    color: #fd2828;
+    font-size: 1.5em;
+}
+.content .confirm-delete-button {
+    grid-area: confirm;
+    height: 100%;
+    color: red;
+    background: #3c0000;
+
+
+}
+.content .cancel-delete-button {
+    grid-area: cancel;
+    height: 100%;
+}
+
+.content button  {
+    width: 100%;
+    padding: 10px;
+    background-color: #555;
+    border: 1px solid #888;
+    color: #ccc;
+    cursor: pointer;
+    height: 80%;
+}
+
+.form-popup .formButtonContainer {
+    display: grid;
+    grid-template-rows: none;
+    grid-template-columns: 1fr 1fr;
+    grid-column-gap: 10%;
+    align-items: center;
+}
+.form-popup div:last-child {
+    display: flex;
+    height: 100%;
+    margin: 1%;
+    row-gap: 0;
+
+    justify-content: center;
+    align-items: center;
+}
+.delete-button-container {
+    display: none;
+    align-items: center;
+}
+.delete-button-container .delete-btn {
+    color: red;
+    background: #3c0000;
+    width: 40%;
+    height: 80%;
+}
+
+.addButtonContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin: 0;
+    width: 100%;
+}
+.add-button {
+    background: rgb(0, 255, 0);
+    font-size:18px;
+    padding: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    font-weight: bold;
+}
+button {
+    cursor: pointer;
 }
 
 tr {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 2px;
+    padding: 3px;
     text-align: center;
     height: 60px;
 }
-
-td {
-    flex: 0 0 22%;
-    border: 2px solid #000000;
-    height: 100%;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-thead tr td{
-    background-color: rgb(83, 83, 83);
-}
-
-thead tr td:first-child, thead tr td:last-child {
-    background-color: transparent;
-    border: none;
-}
-
-thead tr td:first-child, thead tr td:last-child, tbody tr td:first-child, tbody tr td:last-child {
+tr td:first-child, tr td:last-child {
+    touch-action: none;
     flex: none;
+    min-width: 0;
     width: 60px;
 }
 
+td {
+    display: flex;
+    border: 2px solid #000000;
+    height: 100%;
+    width: 100%;
+    min-width: 15%;
+    align-items: center;
+    justify-content: center;
+    background: rgba(170, 170, 170, .7);
+    word-wrap: break-word;
+}
 td button {
     height: 100%;
     width: 100%;
     background-color: transparent;
     border: none;
 }
-
-tbody td {
-    background: rgba(170, 170, 170, .7);
+td:first-child button {
+    cursor: move;
 }
 
-.draggable-table__drag td {
-    border: 1px solid white;
+thead tr td {background-color: rgb(83, 83, 83);}
+thead tr td:first-child {
+    background-color: transparent;
+    border-top-color: transparent;
+    border-left-color: transparent;
+    border-bottom-color: transparent;
+}
+thead tr td:last-child {
+    background-color: transparent;
+    border-top-color: transparent;
+    border-right-color: transparent;
+    border-bottom-color: transparent;
 }
 
-.draggable-table__drag tr {
-    height: 70px;
+tbody tr:last-child.is-dragging td:first-child {
+    border-left-color: transparent;
+    border-bottom-color: transparent;
 }
-
-.draggable-table__drag td:first-child, .draggable-table__drag td:last-child {
-    flex: none;
-    width: 60px;
+tbody tr:last-child.is-dragging td:last-child {
+    border-right-color: transparent;
+    border-bottom-color: transparent;
 }
 
 .draggable-table {
-    position: absolute;
-    top: 22.5%;
-    left: 10%;
-    width: 80%;
+    table-layout: fixed;
     border-collapse: collapse;
-    -webkit-box-shadow: 0px 0px 10px 8px rgba(0, 0, 0, 0.1);
-    box-shadow: 0px 0px 10px 8px rgba(0, 0, 0, 0.1);
+    user-select: none;
+    margin-bottom: 20%;
+    z-index: 1;
+}
+.draggable-table__drag td {
+    border: 3px solid white;
 }
 
-.draggable-table .draggable-table__drag {
-    position: absolute;
-    z-index: 10;
-    cursor: grabbing;
-    color: #8e8e8e;
-    background: rgb(255, 255, 255);
-    opacity: .7;
-}
 
-.draggable-table thead tr {
+.draggable-table__drag {
+    position: fixed;
+    color: #000000;
+    background: rgb(51, 51, 51);
+    opacity: .9;
     font-weight: bold;
-    text-transform: capitalize;
-    user-select: none;
+    z-index: 3;
 }
 
-.draggable-table thead tr td {
+.draggable-table thead {
     color: rgb(201, 201, 201);
+    font-weight: bold;
 }
 
-.draggable-table tbody tr button {
-    cursor: grab;
+tr.is-dragging td{
+    background: rgba(0, 0, 0, 0.4);
+    color: transparent;
 }
 
-.draggable-table tbody tr td {
-    text-transform: capitalize;
-    user-select: none;
+tr.is-dragging td:first-child {
+    background-color: transparent;
+    color: transparent;
+    border-left-color: transparent;
 }
 
-.draggable-table tbody tr.is-dragging td{
-    background: rgba(0, 0, 0, 0.2);
+.draggable-table__drag td:first-child button, .draggable-table__drag {
+    cursor: grabbing;
 }
 
-.draggable-table tbody tr.is-dragging td {
+tr.is-dragging td:last-child {
+    background-color: transparent;
+    color: transparent;
+    border-right-color: transparent;
+}
+
+tr:first-child.is-dragging td:first-child,  tr:first-child.is-dragging td:last-child {
+    border-top-color: transparent;
+}
+
+tr.is-dragging .material-icons {
     color: rgba(0, 0, 0, 0);
+}
+
+.slidecontainer {
+    width: 100%;
+}
+
+.slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 10px;
+    border-radius: 5px;
+    background: red;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+}
+
+.slider:hover {
+    opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+    appearance: none;
+    width: 23px;
+    height: 24px;
+    border-radius: 50%;
+    background: #ffffff;
+    cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+    width: 23px;
+    height: 24px;
+    border-radius: 50%;
+    background: #04AA6D;
+    cursor: pointer;
 }
