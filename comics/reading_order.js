@@ -8,6 +8,7 @@
         addComicButton = document.getElementsByClassName("add-button")[0],
 
         formPopup = document.getElementById('formPopup'),
+        formPopupTitle = document.getElementById('formPopupTitle'),
         formPopupBG = document.getElementById("formPopupBG"),
         formPopupSaveButton = document.getElementById('saveBtn'),
         formPopupCancelButton = document.getElementById('cancelBtn'),
@@ -130,6 +131,7 @@
                 formPopup.reset();
                 updateRatingInputSlider();
                 formPopupBG.style.zIndex = 2;
+                formPopupTitle.innerText = 'New Comic'
                 formPopup.style.display = 'grid';
                 break;
 
@@ -143,6 +145,7 @@
                 updateRatingInputSlider()
                 confirmPopup.style.display = 'none';
                 formPopupBG.style.zIndex = 2;
+                formPopupTitle.innerText = 'Edit Comic'
                 formPopup.style.display = 'grid';
                 break;
 

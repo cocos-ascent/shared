@@ -117,6 +117,7 @@ h1 {
 .form-popup h2 {
     text-align: center;
     margin: 0;
+    font-size: 250%;;
 }
 .form-popup input,
 .form-popup textarea {
