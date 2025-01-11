@@ -93,6 +93,8 @@
             selectedRow.children[3].innerText = reason;
             if (rating == 0) rating = '';
             selectedRow.children[4].innerText = rating;
+
+            selectedRow.children[4].style.color = ratingToColor(rating);
             postData = ['edit', selectedRow.rowIndex + 1, comic, creator, reason, rating]
 
         } else {
@@ -258,7 +260,7 @@
                 <td>${comic}</td>
                 <td>${creator}</td>
                 <td>${reason}</td>
-                <td>${rating}</td>
+                <td class="ratingText">${rating}</td>
                 <td><button class="material-icons">edit</button></td>
             </tr>`;
 
@@ -266,6 +268,7 @@
             for (let i = 2; i < 5; i++) row.children[i].style.display = 'none';
             row.style.gridTemplateColumns = 'auto 1fr auto';
         }
+        row.children[4].style.color = ratingToColor(rating);
     }
 
     function onPressed(event) {

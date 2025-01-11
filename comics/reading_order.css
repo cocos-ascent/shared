@@ -370,6 +370,11 @@ tr.is-dragging .material-icons {
 
 }
 
+.ratingText {
+    font-size: 150%;
+    text-shadow: black 0 0 10px, black 0 0 15px, black 0 0 15px, black 0 0 20px;
+}
+
 
 
 .slider {
