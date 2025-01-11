@@ -16,7 +16,7 @@
 
         comicNameInputText = document.getElementById("comicName"),
         creatorInputText = document.getElementById("creator"),
-        reasonInputText = document.getElementById("rating"),
+        reasonInputText = document.getElementById("reason"),
         ratingInputSlider = document.getElementById("rating"),
         formPopupInputs = [comicNameInputText, creatorInputText, reasonInputText, ratingInputSlider],
         ratingDisplay = document.getElementById("ratingDisplay"),
@@ -163,6 +163,7 @@
         }
         addComicButton.disabled = false;
         formPopupBG.style.display = 'none';
+        document.documentElement.style.overflowY = 'auto';
     }
     function disableMainPage() {
         let rowButtons = document.getElementsByClassName("material-icons");
@@ -172,6 +173,7 @@
         }
         addComicButton.disabled = true;
         formPopupBG.style.display='block';
+        document.documentElement.style.overflowY = 'hidden';
     }
 
     async function fetchGoogleSheetRows(url) {
@@ -195,6 +197,9 @@
         if (mobileCheck()) {
             hideDetailColumns();
             document.getElementById('bigTitle').style.fontSize = '150%';
+            for (let j = 0; j < table.rows.length; j++) {
+                table.rows[j].style.gridTemplateColumns = 'auto 1fr auto';
+            }
         }
     }
     async function postSend(arrayPackage) {
@@ -244,9 +249,6 @@
     function addRow(comic=comicNameInputText.value, creator=creatorInputText.value,
                     reason=reasonInputText.value, rating=ratingInputSlider.value) {
         const row = tbody.insertRow(-1);
-        let mobileHide = '';
-
-        if (mobileCheck()) mobileHide = ' style="display: none;";';
 
         row.innerHTML = `
             <tr>
@@ -254,11 +256,16 @@
                     <button class="material-icons">reorder</button>
                 </td>
                 <td>${comic}</td>
-                <td${mobileHide}>${creator}</td>
-                <td${mobileHide}>${reason}</td>
-                <td${mobileHide}>${rating}</td>
+                <td>${creator}</td>
+                <td>${reason}</td>
+                <td>${rating}</td>
                 <td><button class="material-icons">edit</button></td>
             </tr>`;
+
+        if (mobileCheck()) {
+            for (let i = 2; i < 5; i++) row.children[i].style.display = 'none';
+            row.style.gridTemplateColumns = 'auto 1fr auto';
+        }
     }
 
     function onPressed(event) {
