@@ -190,15 +190,12 @@
         rowHalfHeight = table.rows[0].getBoundingClientRect().height / 2;
 
         if (mobileCheck()) {
-            for (let i = 0; i < table.rows.length; i++) {
-                for (let j = 2; j < 5; j++) {
-                    table.rows[i].cells[j].style.display = 'none';
-                }
-            }
+            hideDetailColumns();
+            document.getElementById('bigTitle').style.fontSize = '150%';
         }
     }
     async function postSend(arrayPackage) {
-        messageDisplay.textContent = "submitting changes...";
+        messageDisplay.textContent = "changes submitted...";
         messageDisplay.style.color = "rgba(255,255,0,0.8)";
 
         let jsonDataString = JSON.stringify(arrayPackage);
@@ -224,7 +221,7 @@
             .then(function () {
                 // Display a success message
                 document.getElementById("message").textContent =
-                    "changes submitted successfully";
+                    "changes saved successfully";
 
                 document.getElementById("message").style.color = "rgba(0,255,0,0.8)";
                 document.getElementById("saveBtn").disabled = false;
@@ -244,21 +241,24 @@
     function addRow(comic=comicNameInputText.value, creator=creatorInputText.value,
                     reason=reasonInputText.value, rating=ratingInputSlider.value) {
         const row = tbody.insertRow(-1);
+        let mobileHide = '';
+
+        if (mobileCheck()) mobileHide = ' style="display: none;";';
+
         row.innerHTML = `
             <tr>
                 <td>
                     <button class="material-icons">reorder</button>
                 </td>
                 <td>${comic}</td>
-                <td>${creator}</td>
-                <td>${reason}</td>
-                <td>${rating}</td>
+                <td${mobileHide}>${creator}</td>
+                <td${mobileHide}>${reason}</td>
+                <td${mobileHide}>${rating}</td>
                 <td><button class="material-icons">edit</button></td>
             </tr>`;
     }
 
     function onPressed(event) {
-        console.log(mobileCheck())
         if ((!event.touches && event.button !== 0) || event.target.tagName !== "BUTTON") return true;
 
         event = touchCheck(event);
@@ -332,7 +332,7 @@
 
         let tBodyRect = tbody.getBoundingClientRect();
         let newTop = y - rowHalfHeight;
-        console.log('top =', tBodyRect.top, 'y =', y)
+
         if (tBodyRect.top > y) {
             newTop = tBodyRect.top - rowHalfHeight;
         }
@@ -447,6 +447,13 @@
         let newColor = ratingToColor(ratingInputSlider.value);
         ratingDisplay.style.color = newColor;
         ratingInputSlider.style.backgroundColor = newColor;
+    }
+    function hideDetailColumns () {
+        for (let i = 0; i < table.rows.length; i++) {
+            for (let j = 2; j < 5; j++) {
+                table.rows[i].cells[j].style.display = 'none';
+            }
+        }
     }
     function getStyle(target, styleName) {
         let compStyle = getComputedStyle(target),
