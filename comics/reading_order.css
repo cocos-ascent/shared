@@ -112,6 +112,7 @@ h1 {
     font-size: 1.5em;
     font-weight: bold;
     margin: 0;
+    margin-bottom: .5%;
 
 }
 .form-popup h2 {
@@ -358,6 +359,8 @@ tr.is-dragging .material-icons {
 
 }
 
+
+
 .slider {
     -webkit-appearance: none;
     border-radius: 5px;
@@ -375,8 +378,8 @@ tr.is-dragging .material-icons {
 
 .slider::-webkit-slider-thumb {
     appearance: none;
-    width: 23px;
-    height: 24px;
+    width: 1.5%;
+    height: 140%;
     border-radius: 50%;
     background: #ffffff;
     cursor: pointer;
