@@ -5,6 +5,8 @@
     const table = document.getElementById('comicTable'),
         tbody = table.querySelector('tbody'),
 
+        bigTitle = document.getElementById('bigTitle'),
+
         addComicButton = document.getElementsByClassName("add-button")[0],
 
         formPopup = document.getElementById('formPopup'),
@@ -198,11 +200,12 @@
 
         if (mobileCheck()) {
             hideDetailColumns();
-            document.getElementById('bigTitle').style.fontSize = '150%';
+            bigTitle.style.fontSize = '150%';
             for (let j = 0; j < table.rows.length; j++) {
                 table.rows[j].style.gridTemplateColumns = 'auto 1fr auto';
             }
         }
+        setGraffitiSize()
     }
     async function postSend(arrayPackage) {
         messageDisplay.textContent = "changes submitted...";
@@ -480,6 +483,12 @@
         if (value === 0) return ["hsl(", 0, ",0%, 0%)"].join("");
         let hue = ((value) * 120).toString(10);
         return ["hsl(", hue, ",80%,40%)"].join("");
+    }
+    function setGraffitiSize() {
+        const bigTitleBox = bigTitle.getBoundingClientRect();
+
+        document.getElementById('graffiti').height = bigTitleBox.height * 1.45;
+        console.log(bigTitleBox.height)
     }
 
     window.mobileCheck = function() {

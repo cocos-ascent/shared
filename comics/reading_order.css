@@ -17,14 +17,25 @@ body {
     background: radial-gradient(circle, #c5c5c5 0%, #272727 100%) fixed;
     margin: 0;
 }
-h1 {
+
+h1, .big-title {
+    grid-area: 1/1;
     font-size: 300%;
     font-weight: bold;
     letter-spacing: 5px;
-    text-align: center;
     color: #ffffff;
     user-select: none;
+    justify-self: center;
+    height: fit-content;
     margin: 0;
+}
+
+.graffiti {
+    grid-area: 1/1;
+    position: relative;
+    left: 49%;
+    bottom: 10%;
+    opacity: 80%;
 }
 
 .loading-container {
